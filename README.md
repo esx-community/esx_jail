@@ -1,23 +1,28 @@
 # esx_jailer
-#pour l'instant en developpement
+
+made by Jager Bom
 
 
-/!\ si le scipt marche pas mettez tout a la fin du server.cfg restart esx_jailer /!\
+/!\ Purt the script under es_extended /!\
 
-Pouvoir mettre les pesonnes en cellule que pour les policiers
+Only cops can put thiefs in jail with some commands:
 
 
 /unjail id          
--->faire sortir la personne de la prison
+-->unjail someone
 
 
 /jail1 id sec       
--->Mettre la personne dans cellule 1
+-->Put a person in jail 1
 
 
 /jail2 id sec       
--->Mettre la personne dans cellule 2
+-->Put a person in jail 2
 
 
 /jail3 id sec       
--->Mettre la personne dans cellule 3
+-->Put a person in jail 3
+
+
+Original script : https://forum.fivem.net/t/release-fx-jailer-1-1-0-0/41963
+
