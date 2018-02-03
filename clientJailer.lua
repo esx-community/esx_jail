@@ -70,7 +70,7 @@ AddEventHandler("JP1", function(jT)
 					ClearPedTasksImmediately(pP)
 				end
 				if jT % 30 == 0 then
-					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, jT .." secondes avant d'être libéré.")
+					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, jT .." sekunder tills du släpps.")
 				end
 				Citizen.Wait(500)
 				local pL = GetEntityCoords(pP, true)
@@ -82,12 +82,12 @@ AddEventHandler("JP1", function(jT)
 						if jT > 1500 then
 							jT = 1500
 						end
-						TriggerEvent('chatMessage', 'JUDGE', { 0, 0, 0 }, "Ton temps de prison a été prologé.")
+						TriggerEvent('chatMessage', 'JUDGE', { 0, 0, 0 }, "Ditt fängelsestraff förlängdes!")
 					end
 				end
 				jT = jT - 0.5
 			end
-			TriggerServerEvent('chatMessageEntered', "SYSTEM", { 0, 0, 0 }, GetPlayerName(PlayerId()) .." a été libéré de la prison.")
+			TriggerServerEvent('chatMessageEntered', "SYSTEM", { 0, 0, 0 }, GetPlayerName(PlayerId()) .." släpptes från fängelset.")
 			SetEntityCoords(pP, 432.95864868164, -981.41455078125, 29.710334777832)--{x = 432.95864868164,y = -981.41455078125,z = 29.710334777832 },
 			cJ = false
 			SetEntityInvincible(pP, false)
@@ -173,7 +173,7 @@ AddEventHandler("JP2", function(jT)
 					ClearPedTasksImmediately(pP)
 				end
 				if jT % 30 == 0 then
-					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, jT .." secondes avant d'être libéré.")
+					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, jT .." sekunder tills du släpps.")
 				end
 				Citizen.Wait(500)
 				local pL = GetEntityCoords(pP, true)
@@ -185,12 +185,12 @@ AddEventHandler("JP2", function(jT)
 						if jT > 1500 then
 							jT = 1500
 						end
-						TriggerEvent('chatMessage', 'JUDGE', { 0, 0, 0 }, "Ton temps de prison a été prologé.")
+						TriggerEvent('chatMessage', 'JUDGE', { 0, 0, 0 }, "Ditt fängelsestraff förlängdes.")
 					end
 				end
 				jT = jT - 0.5
 			end
-			TriggerServerEvent('chatMessageEntered', "SYSTEM", { 0, 0, 0 }, GetPlayerName(PlayerId()) .." a été libéré de la prison.")
+			TriggerServerEvent('chatMessageEntered', "SYSTEM", { 0, 0, 0 }, GetPlayerName(PlayerId()) .." släpptes från fängelset.")
 			SetEntityCoords(pP, 432.95864868164, -981.41455078125, 29.710334777832)
 			cJ = false
 			SetEntityInvincible(pP, false)
@@ -276,7 +276,7 @@ AddEventHandler("JP3", function(jT)
 					ClearPedTasksImmediately(pP)
 				end
 				if jT % 30 == 0 then
-					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, jT .." secondes avant d'être libéré.")
+					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, jT .." sekunder tills du släpps.")
 				end
 				Citizen.Wait(500)
 				local pL = GetEntityCoords(pP, true)
@@ -288,12 +288,12 @@ AddEventHandler("JP3", function(jT)
 						if jT > 1500 then
 							jT = 1500
 						end
-						TriggerEvent('chatMessage', 'JUDGE', { 0, 0, 0 }, "Ton temps de prison a été prologé.")
+						TriggerEvent('chatMessage', 'JUDGE', { 0, 0, 0 }, "Ditt fängelsestraff förlängdes.")
 					end
 				end
 				jT = jT - 0.5
 			end
-			TriggerServerEvent('chatMessageEntered', "SYSTEM", { 0, 0, 0 }, GetPlayerName(PlayerId()) .." a été libéré de la prison.")
+			TriggerServerEvent('chatMessageEntered', "SYSTEM", { 0, 0, 0 }, GetPlayerName(PlayerId()) .." släpptes från fängelset.")
 			SetEntityCoords(pP, 432.95864868164, -981.41455078125, 29.710334777832)
 			cJ = false
 			SetEntityInvincible(pP, false)

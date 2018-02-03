@@ -18,11 +18,11 @@ AddEventHandler('chatMessage', function(source, n, message)
 				CancelEvent()
 				local tPID = tonumber(cm[2])
 				if GetPlayerName(tPID) ~= nil then
-					print("relaché ".. GetPlayerName(tPID).. " par ".. GetPlayerName(source))
+					print("Befriade ".. GetPlayerName(tPID).. " av ".. GetPlayerName(source))
 					TriggerClientEvent("UnJP", tPID)
 				end
 			else
-				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Tu n'as pas le droit de mettre des personnes en prison !")
+				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Du har inte rätt att sätta folk i fängelse!")
 			end
 		elseif cm[1] == "/jail1" then
 			if xPlayer.job.name == 'police' then
@@ -36,12 +36,12 @@ AddEventHandler('chatMessage', function(source, n, message)
 					jT = maxsecs
 				end
 				if GetPlayerName(tPID) ~= nil then
-					print("Mettre en prison ".. GetPlayerName(tPID).. " pour ".. jT .." secs - commande entrée par ".. GetPlayerName(source))
+					print("Sätter ".. GetPlayerName(tPID).. " i fängelse för ".. jT .." sekunder, av ".. GetPlayerName(source))
 					TriggerClientEvent("JP1", tPID, jT)
-					TriggerClientEvent('chatMessage', -1, 'JUGE', { 0, 0, 0 }, GetPlayerName(tPID) ..' est en prison pour '.. jT ..' secs')
+					TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tPID) ..' sitter nu i fängelse i '.. jT ..' sekunder')
 				end
 			else
-				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Tu n'as pas le droit de mettre des personnes en prison !")
+				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Du har inte rätt att sätta folk i fängelse!")
 			end
 		elseif cm[1] == "/jail2" then
 			if xPlayer.job.name == 'police' then
@@ -55,12 +55,12 @@ AddEventHandler('chatMessage', function(source, n, message)
 					jT = maxsecs
 				end
 				if GetPlayerName(tPID) ~= nil then
-					print("Mettre en prison ".. GetPlayerName(tPID).. " pour ".. jT .." secs - commande entrée par ".. GetPlayerName(source))
+					print("Sätter ".. GetPlayerName(tPID).. " i fängelse för ".. jT .." sekunder, av ".. GetPlayerName(source))
 					TriggerClientEvent("JP2", tPID, jT)
-					TriggerClientEvent('chatMessage', -1, 'JUGE', { 0, 0, 0 }, GetPlayerName(tPID) ..' est en prison pour '.. jT ..' secs')
+					TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tPID) ..' sitter nu i fängelse i '.. jT ..' sekunder')
 				end
 			else
-				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Tu n'as pas le droit de mettre des personnes en prison !")
+				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Du har inte rätt att sätta folk i fängelse!")
 			end
 		elseif cm[1] == "/jail3" then
 			if xPlayer.job.name == 'police' then
@@ -74,12 +74,12 @@ AddEventHandler('chatMessage', function(source, n, message)
 					jT = maxsecs
 				end
 				if GetPlayerName(tPID) ~= nil then
-					print("Mettre en prison ".. GetPlayerName(tPID).. " pour ".. jT .." secs - commande entrée par ".. GetPlayerName(source))
+					print("Sätter ".. GetPlayerName(tPID).. " i fängelse för ".. jT .." sekunder - av ".. GetPlayerName(source))
 					TriggerClientEvent("JP3", tPID, jT)
-					TriggerClientEvent('chatMessage', -1, 'JUGE', { 0, 0, 0 }, GetPlayerName(tPID) ..' est en prison pour '.. jT ..' secs')
+					TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tPID) ..' är i fängelse för '.. jT ..' sekunder')
 				end
 			else
-				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Tu n'as pas le droit de mettre des personnes en prison !")
+				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Du har inte rätt att sätta folk i fängelse!")
 			end
 		end
 end)
