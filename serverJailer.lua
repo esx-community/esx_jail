@@ -1,8 +1,5 @@
 ESX 				= nil
 local defaultsecs   = 300
-local maxsecs 		= 1000
-
------------------------------
 
 --ESX base
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -12,71 +9,29 @@ local xPlayers 		= ESX.GetPlayers()
 AddEventHandler('chatMessage', function(source, n, message)
 	cm = stringsplit(message, " ")
 	local xPlayer = ESX.GetPlayerFromId(source)
-		
 		if cm[1] == "/unjail" then
 			if xPlayer.job.name == 'police' then
 				CancelEvent()
-				local tPID = tonumber(cm[2])
-				if GetPlayerName(tPID) ~= nil then
-					print("Befriade ".. GetPlayerName(tPID).. " av ".. GetPlayerName(source))
-					TriggerClientEvent("UnJP", tPID)
+				local targetPID = tonumber(cm[2])
+				if GetPlayerName(targetPID) ~= nil then
+					print("Befriade ".. GetPlayerName(targetPID).. " under ".. GetPlayerName(source) .. "s befäl")
+					TriggerClientEvent("esx_jailer:unjail", targetPID)
 				end
 			else
 				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Du har inte rätt att sätta folk i fängelse!")
 			end
-		elseif cm[1] == "/jail1" then
+		elseif cm[1] == "/jail" then
 			if xPlayer.job.name == 'police' then
 				CancelEvent()
-				local tPID = tonumber(cm[2])
-				local jT = defaultsecs
+				local targetPID = tonumber(cm[2])
+				local jailTime = defaultsecs
 					if cm[3] ~= nil then
-						jT = tonumber(cm[3])				
+						jailTime = tonumber(cm[3])
 					end
-				if jT > maxsecs then
-					jT = maxsecs
-				end
-				if GetPlayerName(tPID) ~= nil then
-					print("Sätter ".. GetPlayerName(tPID).. " i fängelse för ".. jT .." sekunder, av ".. GetPlayerName(source))
-					TriggerClientEvent("JP1", tPID, jT)
-					TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tPID) ..' sitter nu i fängelse i '.. jT ..' sekunder')
-				end
-			else
-				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Du har inte rätt att sätta folk i fängelse!")
-			end
-		elseif cm[1] == "/jail2" then
-			if xPlayer.job.name == 'police' then
-				CancelEvent()
-				local tPID = tonumber(cm[2])
-				local jT = defaultsecs
-					if cm[3] ~= nil then
-						jT = tonumber(cm[3])				
-					end
-				if jT > maxsecs then
-					jT = maxsecs
-				end
-				if GetPlayerName(tPID) ~= nil then
-					print("Sätter ".. GetPlayerName(tPID).. " i fängelse för ".. jT .." sekunder, av ".. GetPlayerName(source))
-					TriggerClientEvent("JP2", tPID, jT)
-					TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tPID) ..' sitter nu i fängelse i '.. jT ..' sekunder')
-				end
-			else
-				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Du har inte rätt att sätta folk i fängelse!")
-			end
-		elseif cm[1] == "/jail3" then
-			if xPlayer.job.name == 'police' then
-				CancelEvent()
-				local tPID = tonumber(cm[2])
-				local jT = defaultsecs
-					if cm[3] ~= nil then
-						jT = tonumber(cm[3])				
-					end
-				if jT > maxsecs then
-					jT = maxsecs
-				end
-				if GetPlayerName(tPID) ~= nil then
-					print("Sätter ".. GetPlayerName(tPID).. " i fängelse för ".. jT .." sekunder - av ".. GetPlayerName(source))
-					TriggerClientEvent("JP3", tPID, jT)
-					TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tPID) ..' är i fängelse för '.. jT ..' sekunder')
+				if GetPlayerName(targetPID) ~= nil then
+					print("Sätter ".. GetPlayerName(targetPID).. " i fängelse för ".. jailTime .." sekunder, av ".. GetPlayerName(source))
+					TriggerClientEvent("esx_jailer:jail", targetPID, jailTime)
+					TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(targetPID) ..' sitter nu i fängelse i '.. jailTime ..' sekunder')
 				end
 			else
 				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Du har inte rätt att sätta folk i fängelse!")
