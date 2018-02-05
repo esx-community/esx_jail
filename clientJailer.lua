@@ -1,7 +1,6 @@
 local cJ = false
 local eJE = false
 
-
 --ESX base
 
 Citizen.CreateThread(function()
