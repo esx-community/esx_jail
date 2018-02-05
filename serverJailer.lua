@@ -8,7 +8,7 @@ TriggerEvent('es:addGroupCommand', 'jail', 'user', function(source, args, user)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer.job.name == 'police' then
 		TriggerClientEvent("esx_jailer:jail", tonumber(args[1]), tonumber(args[2]))
-		TriggerClientEvent('chatMessage', source, 'DOMARE', { 0, 0, 0 }, GetPlayerName(targetPID) ..' sitter nu i fängelse på '.. jailTime ..' sekunder')
+		TriggerClientEvent('chatMessage', source, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tonumber(args[1]) ..' sitter nu i fängelse på '.. jailTime ..' sekunder')
 	else
 		TriggerClientEvent('chatMessage', source, "SYSTEM", { 255, 0, 0 }, "Insufficient Permissions.")
 	end
