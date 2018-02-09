@@ -1,5 +1,5 @@
 local cJ = false
-local eJE = false
+local unjail = false
 
 --ESX base
 
@@ -11,7 +11,7 @@ Citizen.CreateThread(function()
 end)
 
 RegisterNetEvent("esx_jailer:jail")
-AddEventHandler("esx_jailer:jail", function(jT)
+AddEventHandler("esx_jailer:jail", function(jailTime)
 	if cJ == true then
 		return
 	end
@@ -52,8 +52,8 @@ AddEventHandler("esx_jailer:jail", function(jT)
 			end)
 			SetEntityCoords(pP, 459.5500793457, -994.46508789063, 23.914855957031)--{x = 459.5500793457,y = -994.46508789063,z = 23.914855957031 },
 			cJ = true
-			eJE = false
-			while jT > 0 and not eJE do
+			unjail = false
+			while jailTime > 0 and not unjail do
 				pP = GetPlayerPed(-1)
 				-- RemoveAllPedWeapons(pP, true)
 				        
@@ -61,8 +61,8 @@ AddEventHandler("esx_jailer:jail", function(jT)
 				if IsPedInAnyVehicle(pP, false) then
 					ClearPedTasksImmediately(pP)
 				end
-				if jT % 30 == 0 then
-					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, jT .." sekunder tills du släpps.")
+				if jailTime % 30 == 0 then
+					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, "Det kvarstår " .. jailTime .. " sekunder tills du släpps från fängelset. (" .. jailTime / 60 .. "min)")
 				end
 				Citizen.Wait(500)
 				local pL = GetEntityCoords(pP, true)
@@ -70,17 +70,17 @@ AddEventHandler("esx_jailer:jail", function(jT)
 				if D > 2 then
 					SetEntityCoords(pP, 459.5500793457, -994.46508789063, 23.914855957031)
 					if D > 4 then
-						jT = jT + 60
-						if jT > 1500 then
-							jT = 1500
+						jailTime = jailTime + 60
+						if jailTime > 1500 then
+							jailTime = 1500
 						end
-						TriggerEvent('chatMessage', 'JUDGE', { 0, 0, 0 }, "Ditt fängelsestraff förlängdes!")
+						TriggerEvent('chatMessage', 'JUDGE', { 0, 0, 0 }, "Ditt fängelsestraff förlängdes då du försökt rymma!")
 					end
 				end
-				jT = jT - 0.5
+				jailTime = jailTime - 0.5
 			end
 			TriggerServerEvent('chatMessageEntered', "SYSTEM", { 0, 0, 0 }, GetPlayerName(PlayerId()) .." släpptes från fängelset.")
-			SetEntityCoords(pP, 432.95864868164, -981.41455078125, 29.710334777832)--{x = 432.95864868164,y = -981.41455078125,z = 29.710334777832 },
+			SetEntityCoords(pP, 432.95864868164, -981.41455078125, 29.710334777832)
 			cJ = false
 			SetEntityInvincible(pP, false)
 			ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin, jobSkin)
@@ -110,5 +110,5 @@ end)
 
 RegisterNetEvent("esx_jailer:unjail")
 AddEventHandler("esx_jailer:unjail", function()
-	eJE = true
+	unjail = true
 end)
