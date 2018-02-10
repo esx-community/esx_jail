@@ -36,7 +36,6 @@ AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
 	TriggerClientEvent('chatMessage', source, 'DOMARE', { 0, 0, 0 }, GetPlayerName(source) ..' sitter nu i fängelse för '.. round(jailTime / 60) ..' minuter')
 	TriggerClientEvent('esx_jailer:jail', source, jailTime)
 end)
-end)
 
 -- should the player be in jail?
 RegisterServerEvent('esx_jailer:checkjail')
