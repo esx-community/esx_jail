@@ -3,8 +3,8 @@ ESX = nil
 --ESX base
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
--- jail
-TriggerEvent('es:addGroupCommand', 'jail', 'user', function(source, args, user)
+-- jail command, obsolete
+TriggerEvent('es:addGroupCommand', 'jail', 'admin', function(source, args, user)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer.job.name == 'police' then
 		TriggerClientEvent("esx_jailer:jail", tonumber(args[1]), tonumber(args[2]))
