@@ -7,7 +7,7 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 TriggerEvent('es:addGroupCommand', 'jail', 'admin', function(source, args, user)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer.job.name == 'police' then
-		TriggerEvent('esx_jailer:sendToJail', tonumber(args[1]), tonumber(args[2]))
+		TriggerEvent('esx_jailer:sendToJail', tonumber(args[1]), tonumber(args[2] * 60))
 	else
 		TriggerClientEvent('chatMessage', source, "SYSTEM", { 255, 0, 0 }, "Insufficient Permissions.")
 	end
@@ -31,8 +31,8 @@ end, {help = "Unjail people from jail", params = {{name = "id", help = "target i
 
 RegisterServerEvent('esx_jailer:sendToJail')
 AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
-	local identifier = GetPlayerIdentifiers(source)
-	MySQL.Async.execute("INSERT INTO jail (identifier,jail_time) VALUES (identifier,@jail_time)", {['@identifier'] = identifier, ['@jail_time'] = jailTime})
+	local identifier = GetPlayerIdentifiers(source)[1]
+	MySQL.Async.execute("INSERT INTO jail (identifier,jail_time) VALUES (@identifier,@jail_time)", {['@identifier'] = identifier, ['@jail_time'] = jailTime})
 	TriggerClientEvent('chatMessage', source, 'DOMARE', { 0, 0, 0 }, GetPlayerName(source) ..' sitter nu i fängelse för '.. round(jailTime / 60) ..' minuter')
 	TriggerClientEvent('esx_jailer:jail', source, jailTime)
 end)
@@ -40,14 +40,20 @@ end)
 -- should the player be in jail?
 RegisterServerEvent('esx_jailer:checkjail')
 AddEventHandler('esx_jailer:checkjail', function()
-	local identifier = GetPlayerIdentifiers(source)
-	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(sql)
-		if sql[1] ~= nil then
-			if sql[1].identifier == identifier then -- useless check?
-				TriggerClientEvent('esx_jailer:jail', source, sql[1].jail_time)
-			end
+	local identifier = GetPlayerIdentifiers(source)[1]
+	MySQL.Async.fetchAll(
+	'SELECT * FROM jail WHERE identifier = @identifier',
+	{
+		['@identifier'] = identifier
+	},
+	function(result)
+		if sql[1].identifier == identifier then -- useless check?
+			local jailTime = tonumber(result[i].jail_time)
+			TriggerClientEvent('esx_jailer:jail', source, jailTime)
+			
 		end
-	end)
+	end
+	)
 end)
 
 
