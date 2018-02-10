@@ -50,7 +50,7 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 				ClearPedLastWeaponDamage(playerPed)
 				ResetPedMovementClipset(playerPed, 0)
 			end)
-			SetEntityCoords(pP, 459.5500793457, -994.46508789063, 23.914855957031)--{x = 459.5500793457,y = -994.46508789063,z = 23.914855957031 },
+			SetEntityCoords(pP, 1641.64, 2571.08, 45.56)
 			cJ = true
 			unjail = false
 			while jailTime > 0 and not unjail do
@@ -62,21 +62,9 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 					ClearPedTasksImmediately(pP)
 				end
 				if jailTime % 30 == 0 then
-					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, "Det kvarstår " .. jailTime .. " sekunder tills du släpps från fängelset. (" .. jailTime / 60 .. "min)")
+					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, "Det kvarstår " .. jailTime / 60.. " minuter tills du släpps från fängelset")
 				end
 				Citizen.Wait(500)
-				local pL = GetEntityCoords(pP, true)
-				local D = Vdist(459.5500793457, -994.46508789063, 23.914855957031, pL['x'], pL['y'], pL['z'])
-				if D > 2 then
-					SetEntityCoords(pP, 459.5500793457, -994.46508789063, 23.914855957031)
-					if D > 4 then
-						jailTime = jailTime + 60
-						if jailTime > 1500 then
-							jailTime = 1500
-						end
-						TriggerEvent('chatMessage', 'JUDGE', { 0, 0, 0 }, "Ditt fängelsestraff förlängdes då du försökt rymma!")
-					end
-				end
 				jailTime = jailTime - 0.5
 			end
 			TriggerServerEvent('chatMessageEntered', "SYSTEM", { 0, 0, 0 }, GetPlayerName(PlayerId()) .." släpptes från fängelset.")
