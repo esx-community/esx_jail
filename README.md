@@ -7,12 +7,12 @@ Let cops jail people!
 
 `jailTime` is the jail time in seconds, and `source` is the player id (for example `1`)
 
-Example in `esx_policejob`
-	```
+Example in `esx_policejob`:
+
+```
 		{label = _U('fine'),			value = 'fine'},
 		{label = _U('jail'),			value = 'jail'}
-		
-...
+---
 
 function JailPlayer(player)
 	ESX.UI.Menu.Open(
