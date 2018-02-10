@@ -55,8 +55,7 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 			unjail = false
 			while jailTime > 0 and not unjail do
 				pP = GetPlayerPed(-1)
-				-- RemoveAllPedWeapons(pP, true)
-				        
+				RemoveAllPedWeapons(pP, true)
 				SetEntityInvincible(pP, true)
 				if IsPedInAnyVehicle(pP, false) then
 					ClearPedTasksImmediately(pP)
