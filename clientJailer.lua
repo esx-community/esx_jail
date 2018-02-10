@@ -62,7 +62,7 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 					ClearPedTasksImmediately(pP)
 				end
 				if jailTime % 30 == 0 then
-					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, "Det kvarstår " .. jailTime / 60.. " minuter tills du släpps från fängelset")
+					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, "Det kvarstår " .. round(jailTime / 60).. " minuter tills du släpps från fängelset")
 				end
 				Citizen.Wait(500)
 				jailTime = jailTime - 0.5
@@ -100,3 +100,7 @@ RegisterNetEvent("esx_jailer:unjail")
 AddEventHandler("esx_jailer:unjail", function()
 	unjail = true
 end)
+
+function round(x)
+  return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
+end
