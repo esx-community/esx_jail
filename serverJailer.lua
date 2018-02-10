@@ -30,11 +30,27 @@ end, function(source, args, user)
 	TriggerClientEvent('chatMessage', source, "SYSTEM", {255, 0, 0}, "Insufficient Permissions.")
 end, {help = "Unjail people from jail", params = {{name = "id", help = "target id"}}})
 
-function round(x)
-  return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
-end
-
 RegisterServerEvent('esx_jailer:sendToJail')
 AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
-  TriggerClientEvent('esx_jailer:jail', source, jailTime)
+	local identifier = GetPlayerIdentifiers(source)
+	MySQL.Async.execute("INSERT INTO jail (identifier,jail_time) VALUES (@Identifier,@jail_time)", {['@identifier'] = identifier, ['@jail_time'] = jailTime})
+	TriggerClientEvent('esx_jailer:jail', source, jailTime)
 end)
+
+-- should the player be in jail?
+RegisterServerEvent('esx_jailer:checkjail')
+AddEventHandler('esx_jailer:checkjail', function()
+	local identifier = GetPlayerIdentifiers(source)
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(sql)
+		if sql[1] ~= nil then
+			if sql[1].identifier == identifier then -- useless check?
+				TriggerClientEvent('esx_jailer:jail', source, sql[1].jail_time)
+			end
+		end
+	end)
+end)
+
+
+function round(x)
+	return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
+end
