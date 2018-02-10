@@ -67,9 +67,9 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 				Citizen.Wait(500)
 				local pL = GetEntityCoords(pP, true)
 				local D = Vdist(1641.64, 2571.08, 45.56, pL['x'], pL['y'], pL['z'])
-				if D > 2 then
-					SetEntityCoords(pP, 459.5500793457, -994.46508789063, 23.914855957031)
-					if D > 4 then
+				if D > 10 then
+					SetEntityCoords(pP, 1641.64, 2571.08, 45.56)
+					if D > 20 then
 						jailTime = jailTime + 60
 						if jailTime > 1500 then
 							jailTime = 1500
