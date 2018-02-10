@@ -112,6 +112,10 @@ AddEventHandler("esx_jailer:unjail", function()
 	unjail = true
 end)
 
+AddEventHandler('playerSpawned', function(spawn)
+	TriggerServerEvent('esx_jailer:checkjail')
+end)
+
 function round(x)
   return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
 end
