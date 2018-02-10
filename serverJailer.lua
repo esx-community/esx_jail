@@ -47,7 +47,7 @@ AddEventHandler('esx_jailer:checkjail', function()
 		['@identifier'] = identifier
 	},
 	function(result)
-		if sql[1].identifier == identifier then -- useless check?
+		if result[1].identifier == identifier then -- useless check?
 			local jailTime = tonumber(result[i].jail_time)
 			TriggerClientEvent('esx_jailer:jail', source, jailTime)
 			
