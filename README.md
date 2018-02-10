@@ -3,7 +3,7 @@
 made by Jager Bom
 
 
-/!\ Purt the script under es_extended /!\
+/!\ Put the script under es_extended /!\
 
 Only cops can put thiefs in jail with some commands:
 
@@ -24,5 +24,5 @@ Only cops can put thiefs in jail with some commands:
 -->Put a person in jail 3
 
 
-Original script : https://forum.fivem.net/t/release-fx-jailer-1-1-0-0/41963
+Original script: https://forum.fivem.net/t/release-fx-jailer-1-1-0-0/41963
 
