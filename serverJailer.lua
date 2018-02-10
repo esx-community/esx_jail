@@ -1,104 +1,40 @@
-ESX 				= nil
-local defaultsecs   = 300
-local maxsecs 		= 1000
-
------------------------------
+ESX = nil
 
 --ESX base
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
-local xPlayers 		= ESX.GetPlayers()
-
-AddEventHandler('chatMessage', function(source, n, message)
-	cm = stringsplit(message, " ")
+-- jail
+TriggerEvent('es:addGroupCommand', 'jail', 'user', function(source, args, user)
 	local xPlayer = ESX.GetPlayerFromId(source)
-		
-		if cm[1] == "/unjail" then
-			if xPlayer.job.name == 'police' then
-				CancelEvent()
-				local tPID = tonumber(cm[2])
-				if GetPlayerName(tPID) ~= nil then
-					print("Befriade ".. GetPlayerName(tPID).. " av ".. GetPlayerName(source))
-					TriggerClientEvent("UnJP", tPID)
-				end
-			else
-				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Du har inte rätt att sätta folk i fängelse!")
-			end
-		elseif cm[1] == "/jail1" then
-			if xPlayer.job.name == 'police' then
-				CancelEvent()
-				local tPID = tonumber(cm[2])
-				local jT = defaultsecs
-					if cm[3] ~= nil then
-						jT = tonumber(cm[3])				
-					end
-				if jT > maxsecs then
-					jT = maxsecs
-				end
-				if GetPlayerName(tPID) ~= nil then
-					print("Sätter ".. GetPlayerName(tPID).. " i fängelse för ".. jT .." sekunder, av ".. GetPlayerName(source))
-					TriggerClientEvent("JP1", tPID, jT)
-					TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tPID) ..' sitter nu i fängelse i '.. jT ..' sekunder')
-				end
-			else
-				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Du har inte rätt att sätta folk i fängelse!")
-			end
-		elseif cm[1] == "/jail2" then
-			if xPlayer.job.name == 'police' then
-				CancelEvent()
-				local tPID = tonumber(cm[2])
-				local jT = defaultsecs
-					if cm[3] ~= nil then
-						jT = tonumber(cm[3])				
-					end
-				if jT > maxsecs then
-					jT = maxsecs
-				end
-				if GetPlayerName(tPID) ~= nil then
-					print("Sätter ".. GetPlayerName(tPID).. " i fängelse för ".. jT .." sekunder, av ".. GetPlayerName(source))
-					TriggerClientEvent("JP2", tPID, jT)
-					TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tPID) ..' sitter nu i fängelse i '.. jT ..' sekunder')
-				end
-			else
-				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Du har inte rätt att sätta folk i fängelse!")
-			end
-		elseif cm[1] == "/jail3" then
-			if xPlayer.job.name == 'police' then
-				CancelEvent()
-				local tPID = tonumber(cm[2])
-				local jT = defaultsecs
-					if cm[3] ~= nil then
-						jT = tonumber(cm[3])				
-					end
-				if jT > maxsecs then
-					jT = maxsecs
-				end
-				if GetPlayerName(tPID) ~= nil then
-					print("Sätter ".. GetPlayerName(tPID).. " i fängelse för ".. jT .." sekunder - av ".. GetPlayerName(source))
-					TriggerClientEvent("JP3", tPID, jT)
-					TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tPID) ..' är i fängelse för '.. jT ..' sekunder')
-				end
-			else
-				TriggerClientEvent('chatMessage', -1, 'SYSTEM', { 0, 0, 0 }, "Du har inte rätt att sätta folk i fängelse!")
-			end
-		end
+	if xPlayer.job.name == 'police' then
+		TriggerClientEvent("esx_jailer:jail", tonumber(args[1]), tonumber(args[2]))
+		TriggerClientEvent('chatMessage', source, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tonumber(args[1])) ..' sitter nu i fängelse för '.. round(tonumber(args[2]) / 60) ..' minuter')
+	else
+		TriggerClientEvent('chatMessage', source, "SYSTEM", { 255, 0, 0 }, "Insufficient Permissions.")
+	end
+
+end, function(source, args, user)
+  TriggerClientEvent('chatMessage', source, "SYSTEM", {255, 0, 0}, "Insufficient Permissions.")
+end, {help = "Put a player in jail", params = {{name = "id", help = "target id"}, {name = "time", help = "jail time in seconds"}}})
+
+-- unjail
+TriggerEvent('es:addGroupCommand', 'unjail', 'user', function(source, args, user)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	if xPlayer.job.name == 'police' then
+		TriggerClientEvent("esx_jailer:unjail", tonumber(args[1]))
+		TriggerClientEvent('chatMessage', source, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tonumber(args[1])) ..' har blitt befriad från fängelse')
+	else
+		TriggerClientEvent('chatMessage', source, "SYSTEM", { 255, 0, 0 }, "Insufficient Permissions.")
+	end
+end, function(source, args, user)
+	TriggerClientEvent('chatMessage', source, "SYSTEM", {255, 0, 0}, "Insufficient Permissions.")
+end, {help = "Unjail people from jail", params = {{name = "id", help = "target id"}}})
+
+function round(x)
+  return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
+end
+
+RegisterServerEvent('esx_jailer:sendToJail')
+AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
+  TriggerClientEvent('esx_jailer:jail', source, jailTime)
 end)
-
-
-function stringsplit(inputstr, sep)
-    if sep == nil then
-        sep = "%s"
-    end
-    local t={} ; i=1
-    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-        t[i] = str
-        i = i + 1
-    end
-    return t
-end
-
-function tablelength(T)
-  local count = 0
-  for _ in pairs(T) do count = count + 1 end
-  return count
-end
