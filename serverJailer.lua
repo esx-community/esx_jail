@@ -33,3 +33,8 @@ end, {help = "Unjail people from jail", params = {{name = "id", help = "target i
 function round(x)
   return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
 end
+
+RegisterServerEvent('esx_jailer:sendToJail')
+AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
+  TriggerClientEvent('esx_jailer:jail', source, jailTime)
+end)
