@@ -1,15 +1,28 @@
 # esx_jailer
-Let cops jail people!
+Let cops jail people! Custom built by the SCRP team
 
 # How to jail
 - Use the `esx_jailer:sendToJail(source, jailTime)` server side trigger
-- Use the `/jail source jailTime` command
-
+- Use the `/jail source jailTime` command (only admins)
+- Use the `/unjail playerID` to unjail a player
 `jailTime` is the jail time in seconds, and `source` is the player id (for example `1`)
 
 # Features
 - Jail people!
 - Saves jail info to database, aka anti-combat
+
+# Requirements
+- ES
+- ESX
+- esx_policejob
+- skinchanger
+- MySQL Async
+
+# Based off
+- [Original script](https://forum.fivem.net/t/release-fx-jailer-1-1-0-0/41963)
+- [dbjailer](https://github.com/SSPU1W/dbjailer)
+
+# Add to menu
 
 Example in `esx_policejob`:
 
@@ -39,6 +52,3 @@ function JailPlayer(player)
 	)
 end
 ```
-
-Original script: https://forum.fivem.net/t/release-fx-jailer-1-1-0-0/41963
-
