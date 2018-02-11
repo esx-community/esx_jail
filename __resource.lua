@@ -5,12 +5,11 @@ description 'ESX Jailer'
 version '1.0.0'
 
 client_scripts {
-	'@mysql-async/lib/MySQL.lua',
-	'clientJailer.lua'
+	'client/main.lua'
 
 }
 
 server_scripts {
 	'@mysql-async/lib/MySQL.lua',
-	'serverJailer.lua'
+	'server/main.lua'
 }
