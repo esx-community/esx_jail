@@ -32,7 +32,14 @@ end, {help = "Unjail people from jail", params = {{name = "id", help = "target i
 RegisterServerEvent('esx_jailer:sendToJail')
 AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
 	local identifier = GetPlayerIdentifiers(source)[1]
-	MySQL.Async.execute("INSERT INTO jail (identifier,jail_time) VALUES (@identifier,@jail_time)", {['@identifier'] = identifier, ['@jail_time'] = jailTime})
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
+		if gotInfo[1] ~= nil then
+			MySQL.Sync.execute("UPDATE jail SET jail_time=@jt WHERE identifier=@id", {['@id'] = identifier, ['@jt'] = jailTime})
+		else
+			MySQL.Async.execute("INSERT INTO jail (identifier,jail_time) VALUES (@identifier,@jail_time)", {['@identifier'] = identifier, ['@jail_time'] = jailTime})
+		end
+	end)
+	
 	TriggerClientEvent('chatMessage', source, 'DOMARE', { 0, 0, 0 }, GetPlayerName(source) ..' sitter nu i fängelse för '.. round(jailTime / 60) ..' minuter')
 	TriggerClientEvent('esx_jailer:jail', source, jailTime)
 end)
@@ -52,13 +59,15 @@ end)
 -- send to jail and register in database
 RegisterServerEvent('esx_jailer:unjailQuest')
 AddEventHandler('esx_jailer:unjailQuest', function(source)
-	local player = source -- cannot parse source to client trigger for some weird reason
-	local identifier = GetPlayerIdentifiers(player)[1]
+	local identifier = GetPlayerIdentifiers(source)[1]
 	
-	MySQL.Async.execute('DELETE from jail WHERE identifier = @id', {['@id'] = identifier})
-	
-	TriggerClientEvent('chatMessage', player, 'DOMARE', { 0, 0, 0 }, GetPlayerName(player) ..' har blitt befriad från fängelse')
-	TriggerClientEvent('esx_jailer:unjail', player)
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
+		if gotInfo[1] ~= nil then
+			MySQL.Async.execute('DELETE from jail WHERE identifier = @id', {['@id'] = identifier})
+		end
+	end)
+	--TriggerClientEvent('chatMessage', source, 'DOMARE', { 0, 0, 0 }, GetPlayerName(source) ..' har blitt befriad från fängelse')
+	TriggerClientEvent('esx_jailer:unjail', source)
 end)
 
 function round(x)
