@@ -72,7 +72,9 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 				end
 				jailTime = jailTime - 0.5
 			end
-			TriggerServerEvent('chatMessageEntered', "DOMARE", { 0, 0, 0 }, GetPlayerName(PlayerId()) .." släpptes från fängelset.")
+			-- jail time served
+			TriggerServerEvent('esx_jailer:unjailQuest')
+			
 			SetEntityCoords(pP, 432.95864868164, -981.41455078125, 29.710334777832)
 			cJ = false
 			SetEntityInvincible(pP, false)

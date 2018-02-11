@@ -20,8 +20,7 @@ end, {help = "Put a player in jail", params = {{name = "id", help = "target id"}
 TriggerEvent('es:addGroupCommand', 'unjail', 'user', function(source, args, user)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer.job.name == 'police' then
-		TriggerClientEvent("esx_jailer:unjail", tonumber(args[1]))
-		TriggerClientEvent('chatMessage', source, 'DOMARE', { 0, 0, 0 }, GetPlayerName(tonumber(args[1])) ..' har blitt befriad från fängelse')
+		TriggerEvent('esx_jailer:unjailQuest', tonumber(args[1]))
 	else
 		TriggerClientEvent('chatMessage', source, "SYSTEM", { 255, 0, 0 }, "Insufficient Permissions.")
 	end
@@ -48,6 +47,18 @@ AddEventHandler('esx_jailer:checkjail', function()
 			TriggerClientEvent('esx_jailer:jail', player, tonumber(gotInfo[1].jail_time))
 		end
 	end)
+end)
+
+-- send to jail and register in database
+RegisterServerEvent('esx_jailer:unjailQuest')
+AddEventHandler('esx_jailer:unjailQuest', function(source)
+	local player = source -- cannot parse source to client trigger for some weird reason
+	local identifier = GetPlayerIdentifiers(player)[1]
+	
+	MySQL.Async.execute('DELETE from jail WHERE identifier = @id', {['@id'] = identifier})
+	
+	TriggerClientEvent('chatMessage', player, 'DOMARE', { 0, 0, 0 }, GetPlayerName(player) ..' har blitt befriad från fängelse')
+	TriggerClientEvent('esx_jailer:unjail', player)
 end)
 
 function round(x)
