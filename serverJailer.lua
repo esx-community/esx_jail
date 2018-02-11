@@ -29,6 +29,7 @@ end, function(source, args, user)
 	TriggerClientEvent('chatMessage', source, "SYSTEM", {255, 0, 0}, "Insufficient Permissions.")
 end, {help = "Unjail people from jail", params = {{name = "id", help = "target id"}}})
 
+-- send to jail and register in database
 RegisterServerEvent('esx_jailer:sendToJail')
 AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
 	local identifier = GetPlayerIdentifiers(source)[1]
@@ -40,22 +41,14 @@ end)
 -- should the player be in jail?
 RegisterServerEvent('esx_jailer:checkjail')
 AddEventHandler('esx_jailer:checkjail', function()
-	local identifier = GetPlayerIdentifiers(source)[1]
-	MySQL.Async.fetchAll(
-	'SELECT * FROM jail WHERE identifier = @identifier',
-	{
-		['@identifier'] = identifier
-	},
-	function(result)
-		if result[1].identifier == identifier then -- useless check?
-			local jailTime = tonumber(result[i].jail_time)
-			TriggerClientEvent('esx_jailer:jail', source, jailTime)
-			
+	local player = source -- cannot parse source to client trigger for some weird reason
+	local identifier = GetPlayerIdentifiers(source)[1] -- get steam identifier
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
+		if gotInfo[1] ~= nil then
+			TriggerClientEvent('esx_jailer:jail', player, tonumber(gotInfo[1].jail_time))
 		end
-	end
-	)
+	end)
 end)
-
 
 function round(x)
 	return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)

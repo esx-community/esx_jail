@@ -61,24 +61,18 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 					ClearPedTasksImmediately(pP)
 				end
 				if jailTime % 30 == 0 then
-					TriggerEvent('chatMessage', 'SYSTEM', { 0, 0, 0 }, "Det kvarstår " .. round(jailTime / 60).. " minuter tills du släpps från fängelset")
+					TriggerEvent('chatMessage', 'DOMARE', { 0, 0, 0 }, "Det kvarstår " .. round(jailTime / 60).. " minuter tills du släpps från fängelset")
 				end
 				Citizen.Wait(500)
 				local pL = GetEntityCoords(pP, true)
 				local D = Vdist(1641.64, 2571.08, 45.56, pL['x'], pL['y'], pL['z'])
 				if D > 10 then
 					SetEntityCoords(pP, 1641.64, 2571.08, 45.56)
-					if D > 20 then
-						jailTime = jailTime + 60
-						if jailTime > 1500 then
-							jailTime = 1500
-						end
-						TriggerEvent('chatMessage', 'JUDGE', { 0, 0, 0 }, "Ditt fängelsestraff förlängdes då du försökt rymma!")
-					end
+					TriggerEvent('chatMessage', 'DOMARE', { 0, 0, 0 }, "Du får inte rymma från fängelset!")
 				end
 				jailTime = jailTime - 0.5
 			end
-			TriggerServerEvent('chatMessageEntered', "SYSTEM", { 0, 0, 0 }, GetPlayerName(PlayerId()) .." släpptes från fängelset.")
+			TriggerServerEvent('chatMessageEntered', "DOMARE", { 0, 0, 0 }, GetPlayerName(PlayerId()) .." släpptes från fängelset.")
 			SetEntityCoords(pP, 432.95864868164, -981.41455078125, 29.710334777832)
 			cJ = false
 			SetEntityInvincible(pP, false)
