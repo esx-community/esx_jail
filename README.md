@@ -7,6 +7,10 @@ Let cops jail people!
 
 `jailTime` is the jail time in seconds, and `source` is the player id (for example `1`)
 
+# Features
+- Jail people!
+- Saves jail info to database, aka anti-combat
+
 Example in `esx_policejob`:
 
 ```
