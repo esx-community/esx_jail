@@ -5,13 +5,7 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 -- jail command, obsolete
 TriggerEvent('es:addGroupCommand', 'jail', 'admin', function(source, args, user)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	if xPlayer.job.name == 'police' then
-		TriggerEvent('esx_jailer:sendToJail', tonumber(args[1]), tonumber(args[2] * 60))
-	else
-		TriggerClientEvent('chatMessage', source, "SYSTEM", { 255, 0, 0 }, "Insufficient Permissions.")
-	end
-
+	TriggerEvent('esx_jailer:sendToJail', tonumber(args[1]), tonumber(args[2] * 60))
 end, function(source, args, user)
   TriggerClientEvent('chatMessage', source, "SYSTEM", {255, 0, 0}, "Insufficient Permissions.")
 end, {help = "Put a player in jail", params = {{name = "id", help = "target id"}, {name = "time", help = "jail time in seconds"}}})
