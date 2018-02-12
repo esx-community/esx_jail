@@ -52,15 +52,15 @@ end)
 
 -- send to jail and register in database
 RegisterServerEvent('esx_jailer:unjailQuest')
-AddEventHandler('esx_jailer:unjailQuest', function(source)
-	local identifier = GetPlayerIdentifiers(source)[1]
-	
+AddEventHandler('esx_jailer:unjailQuest', function()
+	local player = source -- cannot parse source to client trigger for some weird reason
+	local identifier = GetPlayerIdentifiers(player)[1]
 	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
 		if gotInfo[1] ~= nil then
 			MySQL.Async.execute('DELETE from jail WHERE identifier = @id', {['@id'] = identifier})
 		end
 	end)
-	--TriggerClientEvent('chatMessage', source, 'DOMARE', { 0, 0, 0 }, GetPlayerName(source) ..' har blitt befriad från fängelse')
+	TriggerClientEvent('chatMessage', source, 'DOMARE', { 0, 0, 0 }, GetPlayerName(source) ..' har blitt befriad från fängelse')
 	TriggerClientEvent('esx_jailer:unjail', source)
 end)
 
