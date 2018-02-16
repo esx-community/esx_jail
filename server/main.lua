@@ -45,7 +45,7 @@ AddEventHandler('esx_jailer:checkjail', function()
 	local identifier = GetPlayerIdentifiers(player)[1] -- get steam identifier
 	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
 		if gotInfo[1] ~= nil then
-			TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(player) ..' sitter nu i fängelse för '.. round(gotInfo[1].jail_time / 60) ..' minuter')
+			TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(player) ..' sitter fängelse i '.. round(gotInfo[1].jail_time / 60) ..' minuter')
 			TriggerClientEvent('esx_jailer:jail', player, tonumber(gotInfo[1].jail_time))
 		end
 	end)
@@ -59,7 +59,7 @@ AddEventHandler('esx_jailer:unjailQuest', function(source)
 	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
 		if gotInfo[1] ~= nil then
 			MySQL.Async.execute('DELETE from jail WHERE identifier = @id', {['@id'] = identifier})
-			TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(player) .. ' har blitt befriad från fängelse')
+			TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(player) .. ' har blivit befriad från fängelset')
 		end
 	end)
 	TriggerClientEvent('esx_jailer:unjail', player)
