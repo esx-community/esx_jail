@@ -54,7 +54,9 @@ end)
 -- unjail via command
 RegisterServerEvent('esx_jailer:unjailQuest')
 AddEventHandler('esx_jailer:unjailQuest', function(source)
-	unjail(source)
+	if source ~= nil then
+		unjail(source)
+	end
 end)
 
 -- unjail after time served
