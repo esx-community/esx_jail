@@ -73,7 +73,7 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 				jailTime = jailTime - 0.5
 			end
 			-- jail time served
-			TriggerServerEvent('esx_jailer:unjailQuest', -1)
+			TriggerServerEvent('esx_jailer:unjailTime', -1)
 			
 			SetEntityCoords(pP, 432.95864868164, -981.41455078125, 29.710334777832)
 			cJ = false

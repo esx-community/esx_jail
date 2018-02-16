@@ -51,9 +51,23 @@ AddEventHandler('esx_jailer:checkjail', function()
 	end)
 end)
 
--- send to jail and register in database
+-- unjail via command
 RegisterServerEvent('esx_jailer:unjailQuest')
 AddEventHandler('esx_jailer:unjailQuest', function(source)
+	local player = source -- cannot parse source to client trigger for some weird reason
+	local identifier = GetPlayerIdentifiers(player)[1]
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
+		if gotInfo[1] ~= nil then
+			MySQL.Async.execute('DELETE from jail WHERE identifier = @id', {['@id'] = identifier})
+			TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(player) .. ' har blitt befriad från fängelse')
+		end
+	end)
+	TriggerClientEvent('esx_jailer:unjail', player)
+end)
+
+-- unjail after time served
+RegisterServerEvent('esx_jailer:unjailTime')
+AddEventHandler('esx_jailer:unjailTime', function()
 	local player = source -- cannot parse source to client trigger for some weird reason
 	local identifier = GetPlayerIdentifiers(player)[1]
 	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
