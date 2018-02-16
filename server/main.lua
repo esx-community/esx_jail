@@ -11,13 +11,8 @@ end, function(source, args, user)
 end, {help = "Put a player in jail", params = {{name = "id", help = "target id"}, {name = "time", help = "jail time in seconds"}}})
 
 -- unjail
-TriggerEvent('es:addGroupCommand', 'unjail', 'user', function(source, args, user)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	if xPlayer.job.name == 'police' then
-		TriggerEvent('esx_jailer:unjailQuest', tonumber(args[1]))
-	else
-		TriggerClientEvent('chatMessage', source, "SYSTEM", { 255, 0, 0 }, "Insufficient Permissions.")
-	end
+TriggerEvent('es:addGroupCommand', 'unjail', 'admin', function(source, args, user)
+	TriggerEvent('esx_jailer:unjailQuest', tonumber(args[1]))
 end, function(source, args, user)
 	TriggerClientEvent('chatMessage', source, "SYSTEM", {255, 0, 0}, "Insufficient Permissions.")
 end, {help = "Unjail people from jail", params = {{name = "id", help = "target id"}}})

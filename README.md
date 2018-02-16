@@ -4,7 +4,7 @@ Let cops jail people! Custom built by the SCRP team
 # How to jail
 - Use the `esx_jailer:sendToJail(source, jailTime)` server side trigger
 - Use the `/jail source jailTime` command (only admins)
-- Use the `/unjail playerID` to unjail a player
+- Use the `/unjail playerID` to unjail a player (only admins)
 
 `jailTime` is the jail time in minutes, and `source` is the player id (for example `1`)
 
