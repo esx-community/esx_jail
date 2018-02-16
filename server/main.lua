@@ -34,7 +34,7 @@ AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
 		end
 	end)
 	
-	TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(source) ..' sitter nu i fängelse för '.. round(jailTime / 60) ..' minuter')
+	TriggerClientEvent('chatMessage', -1, 'DOMARE', { 0, 0, 0 }, GetPlayerName(source) ..' sitter fängelse i '.. round(jailTime / 60) ..' minuter')
 	TriggerClientEvent('esx_jailer:jail', source, jailTime)
 end)
 
