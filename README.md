@@ -1,9 +1,16 @@
 # esx_jailer
 Let cops jail people! Custom built by the SCRP team
 
+# Installation
+1. Clone the project and add it to your resorces directory
+2. Add the project to your `server.cfg`
+3. Import `esx_jailer.sql` in your database
+4. Select language in `config.lua`
+5. (Optional) See below on how to jail via `esx_policejob`
+
 # How to jail
 - Use the `esx_jailer:sendToJail(source, jailTime)` server side trigger
-- Use the `/jail source jailTime` command (only admins)
+- Use the `/jail playerID jailTime` command (only admins)
 - Use the `/unjail playerID` to unjail a player (only admins)
 
 `jailTime` is the jail time in minutes, and `source` is the player id (for example `1`)
@@ -11,6 +18,7 @@ Let cops jail people! Custom built by the SCRP team
 # Features
 - Jail people!
 - Saves jail info to database, aka anti-combat
+- Keeps jail time updated
 
 # Requirements
 - ES

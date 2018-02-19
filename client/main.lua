@@ -1,5 +1,6 @@
 local cJ = false
 local unjail = false
+local JailLocation = Config.JailLocation
 
 --ESX base
 
@@ -50,7 +51,7 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 				ClearPedLastWeaponDamage(playerPed)
 				ResetPedMovementClipset(playerPed, 0)
 			end)
-			SetEntityCoords(pP, 1641.64, 2571.08, 45.56)
+			SetEntityCoords(pP, JailLocation.x, JailLocation.y, JailLocation.z)
 			cJ = true
 			unjail = false
 			while jailTime > 0 and not unjail do
@@ -61,22 +62,22 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 					ClearPedTasksImmediately(pP)
 				end
 				if jailTime % 30 == 0 then
-					TriggerEvent('chatMessage', 'DOMARE', { 0, 0, 0 }, "Det kvarstår " .. round(jailTime / 60).. " minuter tills du släpps från fängelset")
+					TriggerEvent('chatMessage', _U('judge'), { 0, 0, 0 }, _U('remaining_msg1') .. round(jailTime / 60).. _U('remaining_msg2'))
 					TriggerServerEvent('esx_jailer:updateRemaining', -1, jailTime)
 				end
 				Citizen.Wait(500)
 				local pL = GetEntityCoords(pP, true)
-				local D = Vdist(1641.64, 2571.08, 45.56, pL['x'], pL['y'], pL['z'])
+				local D = Vdist(JailLocation.x, JailLocation.y, JailLocation.z, pL['x'], pL['y'], pL['z'])
 				if D > 10 then
-					SetEntityCoords(pP, 1641.64, 2571.08, 45.56)
-					TriggerEvent('chatMessage', 'DOMARE', { 0, 0, 0 }, "Du får inte rymma från fängelset!")
+					SetEntityCoords(pP, JailLocation.x, JailLocation.y, JailLocation.z)
+					TriggerEvent('chatMessage', _U('judge'), { 0, 0, 0 }, _U('escape_attempt'))
 				end
 				jailTime = jailTime - 0.5
 			end
 			-- jail time served
 			TriggerServerEvent('esx_jailer:unjailTime', -1)
 			
-			SetEntityCoords(pP, 432.95864868164, -981.41455078125, 29.710334777832)
+			SetEntityCoords(pP, Config.JailBlip.x, Config.JailBlip.y, Config.JailBlip.z)
 			cJ = false
 			SetEntityInvincible(pP, false)
 			ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin, jobSkin)
@@ -111,6 +112,19 @@ end)
 
 AddEventHandler('playerSpawned', function(spawn)
 	TriggerServerEvent('esx_jailer:checkjail')
+end)
+
+-- Create Blips
+Citizen.CreateThread(function()
+	local blip = AddBlipForCoord(Config.JailBlip.x, Config.JailBlip.y, Config.JailBlip.z)
+	SetBlipSprite(blip, 237)
+	SetBlipDisplay(blip, 4)
+	SetBlipScale(blip, 1.5)
+	SetBlipColour(blip, 1)
+	SetBlipAsShortRange(blip, true)
+	BeginTextCommandSetBlipName("STRING")
+	AddTextComponentString(_U('blip_name'))
+	EndTextCommandSetBlipName(blip)
 end)
 
 function round(x)
