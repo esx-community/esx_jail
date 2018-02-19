@@ -13,8 +13,6 @@ Let cops jail people! Custom built by the SCRP team
 - Use the `/jail playerID jailTime` command (only admins)
 - Use the `/unjail playerID` to unjail a player (only admins)
 
-`jailTime` is the jail time in minutes, and `source` is the player id (for example `1`)
-
 # Features
 - Jail people!
 - Saves jail info to database, aka anti-combat
