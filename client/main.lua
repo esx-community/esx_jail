@@ -62,6 +62,7 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 				end
 				if jailTime % 30 == 0 then
 					TriggerEvent('chatMessage', 'DOMARE', { 0, 0, 0 }, "Det kvarstår " .. round(jailTime / 60).. " minuter tills du släpps från fängelset")
+					TriggerServerEvent('esx_jailer:updateRemaining', -1, jailTime)
 				end
 				Citizen.Wait(500)
 				local pL = GetEntityCoords(pP, true)

@@ -60,6 +60,17 @@ AddEventHandler('esx_jailer:unjailTime', function()
 	unjail(source)
 end)
 
+-- keep jailtime updated
+RegisterServerEvent('esx_jailer:updateRemaining')
+AddEventHandler('esx_jailer:updateRemaining', function(jailTime)
+	local identifier = GetPlayerIdentifiers(source)[1]
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
+		if gotInfo[1] ~= nil then
+			MySQL.Sync.execute("UPDATE jail SET jail_time=@jt WHERE identifier=@id", {['@id'] = identifier, ['@jt'] = jailTime})
+		end
+	end)
+end)
+
 function unjail(target)
 	local identifier = GetPlayerIdentifiers(target)[1]
 	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
