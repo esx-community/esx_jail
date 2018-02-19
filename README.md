@@ -31,11 +31,17 @@ Let cops jail people! Custom built by the SCRP team
 
 # Add to menu
 
-Example in `esx_policejob`:
+Example in `esx_policejob: client/main.lua`:
 
 ```
 		{label = _U('fine'),			value = 'fine'},
 		{label = _U('jail'),			value = 'jail'}
+		
+		
+		if data2.current.value == 'jail' then
+			JailPlayer(GetPlayerServerId(player))
+		end
+
 ---
 
 function JailPlayer(player)
