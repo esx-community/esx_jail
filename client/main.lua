@@ -63,7 +63,7 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 				end
 				if jailTime % 30 == 0 then
 					TriggerEvent('chatMessage', _U('judge'), { 0, 0, 0 }, _U('remaining_msg1') .. round(jailTime / 60).. _U('remaining_msg2'))
-					TriggerServerEvent('esx_jailer:updateRemaining', -1, jailTime)
+					TriggerServerEvent('esx_jailer:updateRemaining', jailTime)
 				end
 				Citizen.Wait(500)
 				local pL = GetEntityCoords(pP, true)
