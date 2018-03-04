@@ -29,7 +29,7 @@ AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
 		end
 	end)
 	
-	TriggerClientEvent('chatMessage', -1, _U('judge'), { 0, 0, 0 }, GetPlayerName(source) .. _U('jailed_msg1') .. round(jailTime / 60) .. _U('jailed_msg2'))
+	TriggerClientEvent('chatMessage', -1, _U('judge'), { 147, 196, 109 }, GetPlayerName(source) .. _U('jailed_msg1') .. round(jailTime / 60) .. _U('jailed_msg2'))
 	TriggerClientEvent('esx_jailer:jail', source, jailTime)
 end)
 
@@ -40,7 +40,7 @@ AddEventHandler('esx_jailer:checkjail', function()
 	local identifier = GetPlayerIdentifiers(player)[1] -- get steam identifier
 	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
 		if gotInfo[1] ~= nil then
-			TriggerClientEvent('chatMessage', -1, _U('judge'), { 0, 0, 0 }, GetPlayerName(player) .. _U('jailed_msg1') .. round(gotInfo[1].jail_time / 60) .. _U('jailed_msg2'))
+			TriggerClientEvent('chatMessage', -1, _U('judge'), { 147, 196, 109 }, GetPlayerName(player) .. _U('jailed_msg1') .. round(gotInfo[1].jail_time / 60) .. _U('jailed_msg2'))
 			TriggerClientEvent('esx_jailer:jail', player, tonumber(gotInfo[1].jail_time))
 		end
 	end)
@@ -76,7 +76,7 @@ function unjail(target)
 	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
 		if gotInfo[1] ~= nil then
 			MySQL.Async.execute('DELETE from jail WHERE identifier = @id', {['@id'] = identifier})
-			TriggerClientEvent('chatMessage', -1, _U('judge'), { 0, 0, 0 }, GetPlayerName(target) .. _U('unjailed'))
+			TriggerClientEvent('chatMessage', -1, _U('judge'), { 147, 196, 109 }, GetPlayerName(target) .. _U('unjailed'))
 		end
 	end)
 	TriggerClientEvent('esx_jailer:unjail', target)

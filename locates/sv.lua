@@ -1,6 +1,6 @@
 Locales ['sv'] = {
 	['blip_name']          = 'Fängelse',
-	['judge']              = 'DOMARE',
+	['judge']              = 'Fängelse',
 	['escape_attempt']     = 'Du får inte rymma från fängelset!',
 	['remaining_msg1']     = 'Det kvarstår ',
 	['remaining_msg2']     = ' minuter tills du släpps från fängelset',

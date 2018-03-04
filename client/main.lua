@@ -62,7 +62,7 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 					ClearPedTasksImmediately(pP)
 				end
 				if jailTime % 30 == 0 then
-					TriggerEvent('chatMessage', _U('judge'), { 0, 0, 0 }, _U('remaining_msg1') .. round(jailTime / 60).. _U('remaining_msg2'))
+					TriggerEvent('chatMessage', _U('judge'), { 147, 196, 109 }, _U('remaining_msg1') .. round(jailTime / 60).. _U('remaining_msg2'))
 					TriggerServerEvent('esx_jailer:updateRemaining', jailTime)
 				end
 				Citizen.Wait(500)
@@ -70,7 +70,7 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 				local D = Vdist(JailLocation.x, JailLocation.y, JailLocation.z, pL['x'], pL['y'], pL['z'])
 				if D > 10 then
 					SetEntityCoords(pP, JailLocation.x, JailLocation.y, JailLocation.z)
-					TriggerEvent('chatMessage', _U('judge'), { 0, 0, 0 }, _U('escape_attempt'))
+					TriggerEvent('chatMessage', _U('judge'), { 147, 196, 109 }, _U('escape_attempt'))
 				end
 				jailTime = jailTime - 0.5
 			end
