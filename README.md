@@ -1,5 +1,6 @@
 # esx_jailer
 Let cops jail people! Custom built by the SCRP team
+- [FiveM Forum thread](https://forum.fivem.net/t/release-esx-jailer/82896)
 
 # Installation
 1. Clone the project and add it to your resorces directory
