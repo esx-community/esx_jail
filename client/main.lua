@@ -34,7 +34,6 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 			ResetPedVisibleDamage(sourcePed)
 			ClearPedLastWeaponDamage(sourcePed)
 			ResetPedMovementClipset(sourcePed, 0)
-			SetEntityCanBeDamaged(sourcePed, false)
 			
 			SetEntityCoords(sourcePed, JailLocation.x, JailLocation.y, JailLocation.z)
 			escape = true
@@ -67,7 +66,6 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 			SetEntityCoords(sourcePed, Config.JailBlip.x, Config.JailBlip.y, Config.JailBlip.z)
 			
 			escape = false
-			SetEntityCanBeDamaged(sourcePed, true)
 			
 			-- Change back the user skin
 			ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin)
