@@ -24,8 +24,8 @@ end, {help = "Unjail people from jail", params = {{name = "id", help = "target i
 RegisterServerEvent('esx_jailer:sendToJail')
 AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
 	local identifier = GetPlayerIdentifiers(source)[1]
-	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
-		if gotInfo[1] ~= nil then
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(result)
+		if result[1] ~= nil then
 			MySQL.Sync.execute("UPDATE jail SET jail_time=@jt WHERE identifier=@id", {['@id'] = identifier, ['@jt'] = jailTime})
 		else
 			MySQL.Async.execute("INSERT INTO jail (identifier,jail_time) VALUES (@identifier,@jail_time)", {['@identifier'] = identifier, ['@jail_time'] = jailTime})
@@ -37,14 +37,14 @@ AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
 end)
 
 -- should the player be in jail?
-RegisterServerEvent('esx_jailer:checkjail')
-AddEventHandler('esx_jailer:checkjail', function()
+RegisterServerEvent('esx_jailer:checkJail')
+AddEventHandler('esx_jailer:checkJail', function()
 	local player = source -- cannot parse source to client trigger for some weird reason
 	local identifier = GetPlayerIdentifiers(player)[1] -- get steam identifier
-	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
-		if gotInfo[1] ~= nil then
-			TriggerClientEvent('chatMessage', -1, _U('judge'), { 147, 196, 109 }, _U('jailed_msg', GetPlayerName(player), round(gotInfo[1].jail_time / 60)))
-			TriggerClientEvent('esx_jailer:jail', player, tonumber(gotInfo[1].jail_time))
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(result)
+		if result[1] ~= nil then
+			TriggerClientEvent('chatMessage', -1, _U('judge'), { 147, 196, 109 }, _U('jailed_msg', GetPlayerName(player), round(result[1].jail_time / 60)))
+			TriggerClientEvent('esx_jailer:jail', player, tonumber(result[1].jail_time))
 		end
 	end)
 end)

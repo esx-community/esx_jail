@@ -1,6 +1,8 @@
-local escape = false
+local IsJailed = false
 local unjail = false
+local JailTime = 0
 local JailLocation = Config.JailLocation
+ESX = nil
 
 --ESX base
 Citizen.CreateThread(function()
@@ -10,11 +12,13 @@ Citizen.CreateThread(function()
 	end
 end)
 
-RegisterNetEvent("esx_jailer:jail")
-AddEventHandler("esx_jailer:jail", function(jailTime)
-	if escape == true then
+RegisterNetEvent('esx_jailer:jail')
+AddEventHandler('esx_jailer:jail', function(jailTime)
+	if IsJailed then -- don't allow multiple jails
 		return
 	end
+
+	JailTime = jailTime
 	local sourcePed = GetPlayerPed(-1)
 	if DoesEntityExist(sourcePed) then
 		Citizen.CreateThread(function()
@@ -36,37 +40,35 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 			ResetPedMovementClipset(sourcePed, 0)
 			
 			SetEntityCoords(sourcePed, JailLocation.x, JailLocation.y, JailLocation.z)
-			escape = true
+			IsJailed = true
 			unjail = false
-			while jailTime > 0 and not unjail do
+			while JailTime > 0 and not unjail do
 				sourcePed = GetPlayerPed(-1)
 				RemoveAllPedWeapons(sourcePed, true)
 				if IsPedInAnyVehicle(sourcePed, false) then
 					ClearPedTasksImmediately(sourcePed)
 				end
-				
-				if jailTime % 120 == 0 then
-					TriggerEvent('chatMessage', _U('judge'), { 147, 196, 109 }, _U('remaining_msg', round(jailTime / 60)))
-					TriggerServerEvent('esx_jailer:updateRemaining', jailTime)
+
+				if JailTime % 120 == 0 then
+					TriggerServerEvent('esx_jailer:updateRemaining', JailTime)
 				end
-				
+
 				Citizen.Wait(20000)
-				
+
 				-- Is the player trying to escape?
 				if GetDistanceBetweenCoords(GetEntityCoords(sourcePed), JailLocation.x, JailLocation.y, JailLocation.z) > 10.0001 then
 					SetEntityCoords(sourcePed, JailLocation.x, JailLocation.y, JailLocation.z)
 					TriggerEvent('chatMessage', _U('judge'), { 147, 196, 109 }, _U('escape_attempt'))
 				end
 				
-				jailTime = jailTime - 20
+				JailTime = JailTime - 20
 			end
-			
+
 			-- jail time served
 			TriggerServerEvent('esx_jailer:unjailTime', -1)
 			SetEntityCoords(sourcePed, Config.JailBlip.x, Config.JailBlip.y, Config.JailBlip.z)
-			
-			escape = false
-			
+			IsJailed = false
+
 			-- Change back the user skin
 			ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin)
 				TriggerEvent('skinchanger:loadSkin', skin)
@@ -75,13 +77,38 @@ AddEventHandler("esx_jailer:jail", function(jailTime)
 	end
 end)
 
-RegisterNetEvent("esx_jailer:unjail")
-AddEventHandler("esx_jailer:unjail", function(source)
+Citizen.CreateThread(function()
+	local fastTimer = 0
+	while true do
+		Citizen.Wait(1)
+
+		if JailTime > 0 then
+			if fastTimer == 0 then
+				fastTimer = JailTime
+			end
+
+			draw2dText(_U('remaining_msg', round(fastTimer)), { 0.175, 0.955 } )
+			fastTimer = fastTimer - 0.01
+		else
+			Citizen.Wait(5000)
+		end
+	end
+end)
+
+RegisterNetEvent('esx_jailer:unjail')
+AddEventHandler('esx_jailer:unjail', function(source)
 	unjail = true
 end)
 
+-- When player respawns / joins
 AddEventHandler('playerSpawned', function(spawn)
-	TriggerServerEvent('esx_jailer:checkjail')
+	TriggerServerEvent('esx_jailer:checkJail')
+end)
+
+-- When script starts
+Citizen.CreateThread(function()
+	Citizen.Wait(2000) -- wait for mysql-async to be ready, this should be enough time
+	TriggerServerEvent('esx_jailer:checkJail')
 end)
 
 -- Create Blips
@@ -92,10 +119,24 @@ Citizen.CreateThread(function()
 	SetBlipScale(blip, 1.5)
 	SetBlipColour(blip, 1)
 	SetBlipAsShortRange(blip, true)
-	BeginTextCommandSetBlipName("STRING")
+	BeginTextCommandSetBlipName('STRING')
 	AddTextComponentString(_U('blip_name'))
 	EndTextCommandSetBlipName(blip)
 end)
+
+function draw2dText(text, coords)
+	SetTextFont(4)
+	SetTextProportional(1)
+	SetTextScale(0.45, 0.45)
+	SetTextColour(255, 255, 255, 255)
+	SetTextDropShadow(0, 0, 0, 0, 255)
+	SetTextEdge(1, 0, 0, 0, 255)
+	SetTextDropShadow()
+	SetTextOutline()
+	SetTextEntry('STRING')
+	AddTextComponentString(text)
+	DrawText(table.unpack(coords))
+end
 
 function round(x)
 	return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
