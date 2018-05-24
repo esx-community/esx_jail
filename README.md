@@ -40,7 +40,7 @@ Example in `esx_policejob: client/main.lua`:
 		
 		
 		if data2.current.value == 'jail' then
-			JailPlayer(GetPlayerServerId(player))
+			JailPlayer(GetPlayerServerId(closestPlayer))
 		end
 
 ---
