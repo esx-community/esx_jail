@@ -67,8 +67,8 @@ end)
 RegisterServerEvent('esx_jailer:updateRemaining')
 AddEventHandler('esx_jailer:updateRemaining', function(jailTime)
 	local identifier = GetPlayerIdentifiers(source)[1]
-	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
-		if gotInfo[1] ~= nil then
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(result)
+		if result[1] ~= nil then
 			MySQL.Sync.execute("UPDATE jail SET jail_time=@jt WHERE identifier=@id", {['@id'] = identifier, ['@jt'] = jailTime})
 		end
 	end)
@@ -76,8 +76,8 @@ end)
 
 function unjail(target)
 	local identifier = GetPlayerIdentifiers(target)[1]
-	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(gotInfo)
-		if gotInfo[1] ~= nil then
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(result)
+		if result[1] ~= nil then
 			MySQL.Async.execute('DELETE from jail WHERE identifier = @id', {['@id'] = identifier})
 			TriggerClientEvent('chatMessage', -1, _U('judge'), { 147, 196, 109 }, _U('unjailed', GetPlayerName(target)))
 		end
