@@ -133,9 +133,9 @@ function draw2dText(text, coords)
 	SetTextEdge(1, 0, 0, 0, 255)
 	SetTextDropShadow()
 	SetTextOutline()
-	SetTextEntry('STRING')
-	AddTextComponentString(text)
-	DrawText(table.unpack(coords))
+	BeginTextCommandDisplayText('STRING')
+	AddTextComponentSubstringPlayerName(text)
+	EndTextCommandDisplayText(table.unpack(coords))
 end
 
 function round(x)

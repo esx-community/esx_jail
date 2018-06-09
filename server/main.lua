@@ -26,7 +26,7 @@ AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
 	local identifier = GetPlayerIdentifiers(source)[1]
 	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(result)
 		if result[1] ~= nil then
-			MySQL.Sync.execute("UPDATE jail SET jail_time=@jt WHERE identifier=@id", {['@id'] = identifier, ['@jt'] = jailTime})
+			MySQL.Async.execute("UPDATE jail SET jail_time=@jt WHERE identifier=@id", {['@id'] = identifier, ['@jt'] = jailTime})
 		else
 			MySQL.Async.execute("INSERT INTO jail (identifier,jail_time) VALUES (@identifier,@jail_time)", {['@identifier'] = identifier, ['@jail_time'] = jailTime})
 		end
@@ -69,7 +69,7 @@ AddEventHandler('esx_jailer:updateRemaining', function(jailTime)
 	local identifier = GetPlayerIdentifiers(source)[1]
 	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(result)
 		if result[1] ~= nil then
-			MySQL.Sync.execute("UPDATE jail SET jail_time=@jt WHERE identifier=@id", {['@id'] = identifier, ['@jt'] = jailTime})
+			MySQL.Async.execute("UPDATE jail SET jail_time=@jt WHERE identifier=@id", {['@id'] = identifier, ['@jt'] = jailTime})
 		end
 	end)
 end)
