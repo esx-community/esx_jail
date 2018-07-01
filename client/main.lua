@@ -133,6 +133,7 @@ function draw2dText(text, coords)
 	SetTextEdge(1, 0, 0, 0, 255)
 	SetTextDropShadow()
 	SetTextOutline()
+
 	BeginTextCommandDisplayText('STRING')
 	AddTextComponentSubstringPlayerName(text)
 	EndTextCommandDisplayText(table.unpack(coords))
