@@ -1,10 +1,11 @@
 local IsJailed = false
 local unjail = false
 local JailTime = 0
+local fastTimer = 0
 local JailLocation = Config.JailLocation
+
 ESX = nil
 
---ESX base
 Citizen.CreateThread(function()
 	while ESX == nil do
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -78,19 +79,18 @@ AddEventHandler('esx_jailer:jail', function(jailTime)
 end)
 
 Citizen.CreateThread(function()
-	local fastTimer = 0
 	while true do
 		Citizen.Wait(1)
 
-		if JailTime > 0 then
-			if fastTimer == 0 then
+		if JailTime > 0 and IsJailed then
+			if fastTimer < 0 then
 				fastTimer = JailTime
 			end
 
-			draw2dText(_U('remaining_msg', round(fastTimer)), { 0.175, 0.955 } )
+			draw2dText(_U('remaining_msg', fastTimer), { 0.175, 0.955 } )
 			fastTimer = fastTimer - 0.01
 		else
-			Citizen.Wait(5000)
+			Citizen.Wait(1000)
 		end
 	end
 end)
@@ -98,6 +98,8 @@ end)
 RegisterNetEvent('esx_jailer:unjail')
 AddEventHandler('esx_jailer:unjail', function(source)
 	unjail = true
+	JailTime = 0
+	fastTimer = 0
 end)
 
 -- When player respawns / joins
