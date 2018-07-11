@@ -1,10 +1,11 @@
 local IsJailed = false
 local unjail = false
 local JailTime = 0
+local fastTimer = 0
 local JailLocation = Config.JailLocation
+
 ESX = nil
 
---ESX base
 Citizen.CreateThread(function()
 	while ESX == nil do
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -56,9 +57,9 @@ AddEventHandler('esx_jailer:jail', function(jailTime)
 				Citizen.Wait(20000)
 
 				-- Is the player trying to escape?
-				if GetDistanceBetweenCoords(GetEntityCoords(sourcePed), JailLocation.x, JailLocation.y, JailLocation.z) > 10.0001 then
+				if GetDistanceBetweenCoords(GetEntityCoords(sourcePed), JailLocation.x, JailLocation.y, JailLocation.z) > 10 then
 					SetEntityCoords(sourcePed, JailLocation.x, JailLocation.y, JailLocation.z)
-					TriggerEvent('chatMessage', _U('judge'), { 147, 196, 109 }, _U('escape_attempt'))
+					TriggerEvent('chat:addMessage', { args = { _U('judge'), _U('escape_attempt') }, color = { 147, 196, 109 } })
 				end
 				
 				JailTime = JailTime - 20
@@ -78,19 +79,18 @@ AddEventHandler('esx_jailer:jail', function(jailTime)
 end)
 
 Citizen.CreateThread(function()
-	local fastTimer = 0
 	while true do
 		Citizen.Wait(1)
 
-		if JailTime > 0 then
-			if fastTimer == 0 then
+		if JailTime > 0 and IsJailed then
+			if fastTimer < 0 then
 				fastTimer = JailTime
 			end
 
-			draw2dText(_U('remaining_msg', round(fastTimer)), { 0.175, 0.955 } )
+			draw2dText(_U('remaining_msg', ESX.Round(fastTimer)), { 0.175, 0.955 } )
 			fastTimer = fastTimer - 0.01
 		else
-			Citizen.Wait(5000)
+			Citizen.Wait(1000)
 		end
 	end
 end)
@@ -98,11 +98,17 @@ end)
 RegisterNetEvent('esx_jailer:unjail')
 AddEventHandler('esx_jailer:unjail', function(source)
 	unjail = true
+	JailTime = 0
+	fastTimer = 0
 end)
 
 -- When player respawns / joins
 AddEventHandler('playerSpawned', function(spawn)
-	TriggerServerEvent('esx_jailer:checkJail')
+	if IsJailed then
+		SetEntityCoords(GetPlayerPed(-1), JailLocation.x, JailLocation.y, JailLocation.z)
+	else
+		TriggerServerEvent('esx_jailer:checkJail')
+	end
 end)
 
 -- When script starts
@@ -114,17 +120,17 @@ end)
 -- Create Blips
 Citizen.CreateThread(function()
 	local blip = AddBlipForCoord(Config.JailBlip.x, Config.JailBlip.y, Config.JailBlip.z)
-	SetBlipSprite(blip, 237)
+	SetBlipSprite (blip, 188)
 	SetBlipDisplay(blip, 4)
-	SetBlipScale(blip, 1.5)
-	SetBlipColour(blip, 1)
+	SetBlipScale  (blip, 1.9)
+	SetBlipColour (blip, 4)
 	SetBlipAsShortRange(blip, true)
 	BeginTextCommandSetBlipName('STRING')
 	AddTextComponentString(_U('blip_name'))
 	EndTextCommandSetBlipName(blip)
 end)
 
-function draw2dText(text, coords)
+function draw2dText(text, pos)
 	SetTextFont(4)
 	SetTextProportional(1)
 	SetTextScale(0.45, 0.45)
@@ -133,11 +139,8 @@ function draw2dText(text, coords)
 	SetTextEdge(1, 0, 0, 0, 255)
 	SetTextDropShadow()
 	SetTextOutline()
-	SetTextEntry('STRING')
-	AddTextComponentString(text)
-	DrawText(table.unpack(coords))
-end
 
-function round(x)
-	return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
+	BeginTextCommandDisplayText('STRING')
+	AddTextComponentSubstringPlayerName(text)
+	EndTextCommandDisplayText(table.unpack(pos))
 end
