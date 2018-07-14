@@ -30,8 +30,8 @@ end, {help = "Unjail people from jail", params = {{name = "id", help = "target i
 
 -- send to jail and register in database
 RegisterServerEvent('esx_jailer:sendToJail')
-AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
-	local identifier = GetPlayerIdentifiers(source)[1]
+AddEventHandler('esx_jailer:sendToJail', function(target, jailTime)
+	local identifier = GetPlayerIdentifiers(target)[1]
 	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(result)
 		if result[1] ~= nil then
 			MySQL.Async.execute("UPDATE jail SET jail_time=@jt WHERE identifier=@id", {['@id'] = identifier, ['@jt'] = jailTime})
@@ -40,8 +40,9 @@ AddEventHandler('esx_jailer:sendToJail', function(source, jailTime)
 		end
 	end)
 	
-	TriggerClientEvent('chat:addMessage', -1, { args = { _U('judge'), _U('jailed_msg', GetPlayerName(source), ESX.Round(jailTime / 60)) }, color = { 147, 196, 109 } })
-	TriggerClientEvent('esx_jailer:jail', source, jailTime)
+	TriggerClientEvent('chat:addMessage', -1, { args = { _U('judge'), _U('jailed_msg', GetPlayerName(target), ESX.Round(jailTime / 60)) }, color = { 147, 196, 109 } })
+	TriggerClientEvent('esx_policejob:unrestrain', target)
+	TriggerClientEvent('esx_jailer:jail', target, jailTime)
 end)
 
 -- should the player be in jail?
