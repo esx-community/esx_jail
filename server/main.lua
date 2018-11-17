@@ -32,15 +32,24 @@ end, {help = "Unjail people from jail", params = {{name = "id", help = "target i
 RegisterServerEvent('esx_jail:sendToJail')
 AddEventHandler('esx_jail:sendToJail', function(target, jailTime)
 	local identifier = GetPlayerIdentifiers(target)[1]
-	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(result)
-		if result[1] ~= nil then
-			MySQL.Async.execute("UPDATE jail SET jail_time=@jt WHERE identifier=@id", {['@id'] = identifier, ['@jt'] = jailTime})
+
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier = @identifier', {
+		['@identifier'] = identifier
+	}, function(result)
+		if result[1] then
+			MySQL.Async.execute('UPDATE jail SET jail_time = @jail_time WHERE identifier = @identifier', {
+				['@identifier'] = identifier,
+				['@jail_time'] = jailTime
+			})
 		else
-			MySQL.Async.execute("INSERT INTO jail (identifier,jail_time) VALUES (@identifier,@jail_time)", {['@identifier'] = identifier, ['@jail_time'] = jailTime})
+			MySQL.Async.execute('INSERT INTO jail (identifier, jail_time) VALUES (@identifier, @jail_time)', {
+				['@identifier'] = identifier,
+				['@jail_time'] = jailTime
+			})
 		end
 	end)
 	
-	TriggerClientEvent('chat:addMessage', -1, { args = { _U('judge'), _U('jailed_msg', GetPlayerName(target), ESX.Round(jailTime / 60)) }, color = { 147, 196, 109 } })
+	TriggerClientEvent('chat:addMessage', -1, { args = { _U('judge'), _U('jailed_msg', GetPlayerName(target), ESX.Math.Round(jailTime / 60)) }, color = { 147, 196, 109 } })
 	TriggerClientEvent('esx_policejob:unrestrain', target)
 	TriggerClientEvent('esx_jail:jail', target, jailTime)
 end)
@@ -48,12 +57,15 @@ end)
 -- should the player be in jail?
 RegisterServerEvent('esx_jail:checkJail')
 AddEventHandler('esx_jail:checkJail', function()
-	local player = source -- cannot parse source to client trigger for some weird reason
-	local identifier = GetPlayerIdentifiers(player)[1] -- get steam identifier
-	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(result)
+	local _source = source -- cannot parse source to client trigger for some weird reason
+	local identifier = GetPlayerIdentifiers(_source)[1] -- get steam identifier
+
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier = @identifier', {
+		['@identifier'] = identifier
+	}, function(result)
 		if result[1] ~= nil then
-			TriggerClientEvent('chat:addMessage', -1, { args = { _U('judge'), _U('jailed_msg', GetPlayerName(player), ESX.Round(result[1].jail_time / 60)) }, color = { 147, 196, 109 } })
-			TriggerClientEvent('esx_jail:jail', player, tonumber(result[1].jail_time))
+			TriggerClientEvent('chat:addMessage', -1, { args = { _U('judge'), _U('jailed_msg', GetPlayerName(_source), ESX.Math.Round(result[1].jail_time / 60)) }, color = { 147, 196, 109 } })
+			TriggerClientEvent('esx_jail:jail', _source, tonumber(result[1].jail_time))
 		end
 	end)
 end)
@@ -76,18 +88,28 @@ end)
 RegisterServerEvent('esx_jail:updateRemaining')
 AddEventHandler('esx_jail:updateRemaining', function(jailTime)
 	local identifier = GetPlayerIdentifiers(source)[1]
-	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(result)
-		if result[1] ~= nil then
-			MySQL.Async.execute("UPDATE jail SET jail_time=@jt WHERE identifier=@id", {['@id'] = identifier, ['@jt'] = jailTime})
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier = @identifier', {
+		['@identifier'] = identifier
+	}, function(result)
+		if result[1] then
+			MySQL.Async.execute('UPDATE jail SET jail_time = @jailTime WHERE identifier = @identifier', {
+				['@identifier'] = identifier,
+				['@jailTime'] = jailTime
+			})
 		end
 	end)
 end)
 
 function unjail(target)
 	local identifier = GetPlayerIdentifiers(target)[1]
-	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier=@id', {['@id'] = identifier}, function(result)
-		if result[1] ~= nil then
-			MySQL.Async.execute('DELETE from jail WHERE identifier = @id', {['@id'] = identifier})
+	MySQL.Async.fetchAll('SELECT * FROM jail WHERE identifier = @identifier', {
+		['@identifier'] = identifier
+	}, function(result)
+		if result[1] then
+			MySQL.Async.execute('DELETE from jail WHERE identifier = @identifier', {
+				['@identifier'] = identifier
+			})
+
 			TriggerClientEvent('chat:addMessage', -1, { args = { _U('judge'), _U('unjailed', GetPlayerName(target)) }, color = { 147, 196, 109 } })
 		end
 	end)
