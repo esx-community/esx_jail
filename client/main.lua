@@ -13,14 +13,14 @@ Citizen.CreateThread(function()
 	end
 end)
 
-RegisterNetEvent('esx_jailer:jail')
-AddEventHandler('esx_jailer:jail', function(jailTime)
+RegisterNetEvent('esx_jail:jail')
+AddEventHandler('esx_jail:jail', function(jailTime)
 	if IsJailed then -- don't allow multiple jails
 		return
 	end
 
 	JailTime = jailTime
-	local sourcePed = GetPlayerPed(-1)
+	local sourcePed = PlayerPedId()
 	if DoesEntityExist(sourcePed) then
 		Citizen.CreateThread(function()
 		
@@ -44,14 +44,15 @@ AddEventHandler('esx_jailer:jail', function(jailTime)
 			IsJailed = true
 			unjail = false
 			while JailTime > 0 and not unjail do
-				sourcePed = GetPlayerPed(-1)
+				sourcePed = PlayerPedId()
+
 				RemoveAllPedWeapons(sourcePed, true)
 				if IsPedInAnyVehicle(sourcePed, false) then
 					ClearPedTasksImmediately(sourcePed)
 				end
 
 				if JailTime % 120 == 0 then
-					TriggerServerEvent('esx_jailer:updateRemaining', JailTime)
+					TriggerServerEvent('esx_jail:updateRemaining', JailTime)
 				end
 
 				Citizen.Wait(20000)
@@ -66,7 +67,7 @@ AddEventHandler('esx_jailer:jail', function(jailTime)
 			end
 
 			-- jail time served
-			TriggerServerEvent('esx_jailer:unjailTime', -1)
+			TriggerServerEvent('esx_jail:unjailTime', -1)
 			SetEntityCoords(sourcePed, Config.JailBlip.x, Config.JailBlip.y, Config.JailBlip.z)
 			IsJailed = false
 
@@ -95,8 +96,8 @@ Citizen.CreateThread(function()
 	end
 end)
 
-RegisterNetEvent('esx_jailer:unjail')
-AddEventHandler('esx_jailer:unjail', function(source)
+RegisterNetEvent('esx_jail:unjail')
+AddEventHandler('esx_jail:unjail', function(source)
 	unjail = true
 	JailTime = 0
 	fastTimer = 0
@@ -105,16 +106,16 @@ end)
 -- When player respawns / joins
 AddEventHandler('playerSpawned', function(spawn)
 	if IsJailed then
-		SetEntityCoords(GetPlayerPed(-1), JailLocation.x, JailLocation.y, JailLocation.z)
+		SetEntityCoords(PlayerPedId(), JailLocation.x, JailLocation.y, JailLocation.z)
 	else
-		TriggerServerEvent('esx_jailer:checkJail')
+		TriggerServerEvent('esx_jail:checkJail')
 	end
 end)
 
 -- When script starts
 Citizen.CreateThread(function()
 	Citizen.Wait(2000) -- wait for mysql-async to be ready, this should be enough time
-	TriggerServerEvent('esx_jailer:checkJail')
+	TriggerServerEvent('esx_jail:checkJail')
 end)
 
 -- Create Blips
