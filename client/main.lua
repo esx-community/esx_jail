@@ -1,7 +1,5 @@
-local IsJailed = false
-local unjail = false
-local JailTime = 0
-local fastTimer = 0
+local IsJailed, unjail = false, false
+local JailTime, fastTimer = 0, 0
 local JailLocation = Config.JailLocation
 
 ESX = nil
