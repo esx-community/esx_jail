@@ -13,6 +13,7 @@ server_scripts {
 	'locales/en.lua',
 	'locales/br.lua',
 	'locales/sv.lua',
+	'locales/dk.lua',
 	'config.lua',
 	'server/main.lua'
 }

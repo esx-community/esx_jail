@@ -1,8 +1,8 @@
 Locales ['dk'] = {
-	['blip_name']          = 'fængsel',
+	['blip_name']          = 'fÃ¦ngsel',
 	['judge']              = 'DOMMER',
-	['escape_attempt']     = 'du må ikke flygte fra fængslet!',
-	['remaining_msg']      = 'der er ~b~%s~s~ sekunder tilbage af din fængselsstraf',
-	['jailed_msg']         = '%s er nu i fængsel i %s minutter',
-	['unjailed']           = '%s er blevet løsladt fra fængsel!'
+	['escape_attempt']     = 'du mÃ¥ ikke flygte fra fÃ¦ngslet!',
+	['remaining_msg']      = 'der er ~b~%s~s~ sekunder tilbage af din fÃ¦ngselsstraf',
+	['jailed_msg']         = '%s er nu i fÃ¦ngsel i %s minutter',
+	['unjailed']           = '%s er blevet lÃ¸sladt fra fÃ¦ngsel!'
 }
