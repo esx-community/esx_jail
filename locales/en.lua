@@ -1,5 +1,5 @@
 Locales ['en'] = {
-	['blip_name']          = 'prison',
+	['blip_name']          = 'bolingbroke Penitentiary',
 	['judge']              = 'JUDGE',
 	['escape_attempt']     = 'you are not allowed to escape the prison!',
 	['remaining_msg']      = 'there remains ~b~%s~s~ seconds until you are released from jail',

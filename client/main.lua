@@ -1,7 +1,5 @@
-local IsJailed, unjail = false, false
-local JailTime, fastTimer = 0, 0
-local JailLocation = Config.JailLocation
-
+local isInJail, unjail = false, false
+local jailTime, fastTimer = 0, 0
 ESX = nil
 
 Citizen.CreateThread(function()
@@ -11,136 +9,99 @@ Citizen.CreateThread(function()
 	end
 end)
 
-RegisterNetEvent('esx_jail:jail')
-AddEventHandler('esx_jail:jail', function(jailTime)
-	if IsJailed then -- don't allow multiple jails
-		return
-	end
+RegisterNetEvent('esx_jail:jailPlayer')
+AddEventHandler('esx_jail:jailPlayer', function(_jailTime)
+	jailTime = _jailTime
 
-	JailTime = jailTime
 	local playerPed = PlayerPedId()
-	if DoesEntityExist(playerPed) then
-		Citizen.CreateThread(function()
-		
-			-- Assign jail skin to user
-			TriggerEvent('skinchanger:getSkin', function(skin)
-				if skin.sex == 0 then
-					TriggerEvent('skinchanger:loadClothes', skin, Config.Uniforms['prison_wear'].male)
-				else
-					TriggerEvent('skinchanger:loadClothes', skin, Config.Uniforms['prison_wear'].female)
-				end
-			end)
-			
-			-- Clear player
-			SetPedArmour(playerPed, 0)
-			ClearPedBloodDamage(playerPed)
-			ResetPedVisibleDamage(playerPed)
-			ClearPedLastWeaponDamage(playerPed)
-			ResetPedMovementClipset(playerPed, 0)
-			
-			ESX.Game.Teleport(playerPed, JailLocation)
-			IsJailed = true
-			unjail = false
-			while JailTime > 0 and not unjail do
-				playerPed = PlayerPedId()
 
-				RemoveAllPedWeapons(playerPed, true)
-				if IsPedInAnyVehicle(playerPed, false) then
-					ClearPedTasksImmediately(playerPed)
-				end
+	TriggerEvent('skinchanger:getSkin', function(skin)
+		if skin.sex == 0 then
+			TriggerEvent('skinchanger:loadClothes', skin, Config.Uniforms.prison_wear.male)
+		else
+			TriggerEvent('skinchanger:loadClothes', skin, Config.Uniforms.prison_wear.female)
+		end
+	end)
 
-				if JailTime % 120 == 0 then
-					TriggerServerEvent('esx_jail:updateRemaining', JailTime)
-				end
+	SetPedArmour(playerPed, 0)
+	ESX.Game.Teleport(playerPed, Config.JailLocation)
+	isInJail, unjail = true, false
 
-				Citizen.Wait(20000)
+	while not unjail do
+		playerPed = PlayerPedId()
 
-				-- Is the player trying to escape?
-				if GetDistanceBetweenCoords(GetEntityCoords(playerPed), JailLocation.x, JailLocation.y, JailLocation.z) > 10 then
-					ESX.Game.Teleport(playerPed, JailLocation)
-					TriggerEvent('chat:addMessage', { args = { _U('judge'), _U('escape_attempt') }, color = { 147, 196, 109 } })
-				end
-				
-				JailTime = JailTime - 20
-			end
+		RemoveAllPedWeapons(playerPed, true)
+		if IsPedInAnyVehicle(playerPed, false) then
+			ClearPedTasksImmediately(playerPed)
+		end
 
-			-- jail time served
-			TriggerServerEvent('esx_jail:unjailTime', -1)
-			ESX.Game.Teleport(playerPed, Config.JailBlip)
-			IsJailed = false
+		Citizen.Wait(20000)
 
-			-- Change back the user skin
-			ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin)
-				TriggerEvent('skinchanger:loadSkin', skin)
-			end)
-		end)
+		-- Is the player trying to escape?
+		if #(GetEntityCoords(playerPed) - Config.JailLocation) > 10 then
+			ESX.Game.Teleport(playerPed, Config.JailLocation)
+			TriggerEvent('chat:addMessage', {args = {_U('judge'), _U('escape_attempt')}, color = {147, 196, 109}})
+		end
 	end
+
+	ESX.Game.Teleport(playerPed, Config.JailBlip)
+	isInJail = false
+
+	ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin)
+		TriggerEvent('skinchanger:loadSkin', skin)
+	end)
 end)
 
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(1)
+		Citizen.Wait(0)
 
-		if JailTime > 0 and IsJailed then
+		if jailTime > 0 and isInJail then
 			if fastTimer < 0 then
-				fastTimer = JailTime
+				fastTimer = jailTime
 			end
 
-			draw2dText(_U('remaining_msg', ESX.Math.Round(fastTimer)), { 0.175, 0.955 } )
+			draw2dText(_U('remaining_msg', ESX.Math.Round(fastTimer)), 0.175, 0.955)
 			fastTimer = fastTimer - 0.01
 		else
-			Citizen.Wait(1000)
+			Citizen.Wait(500)
 		end
 	end
 end)
 
-RegisterNetEvent('esx_jail:unjail')
-AddEventHandler('esx_jail:unjail', function(source)
-	unjail = true
-	JailTime = 0
-	fastTimer = 0
+RegisterNetEvent('esx_jail:unjailPlayer')
+AddEventHandler('esx_jail:unjailPlayer', function()
+	unjail, jailTime, fastTimer = true, 0, 0
 end)
 
--- When player respawns / joins
 AddEventHandler('playerSpawned', function(spawn)
-	if IsJailed then
-		ESX.Game.Teleport(PlayerPedId(), JailLocation)
-	else
-		TriggerServerEvent('esx_jail:checkJail')
+	if isInJail then
+		ESX.Game.Teleport(PlayerPedId(), Config.JailLocation)
 	end
 end)
 
--- When script starts
 Citizen.CreateThread(function()
-	Citizen.Wait(2000) -- wait for mysql-async to be ready, this should be enough time
-	TriggerServerEvent('esx_jail:checkJail')
-end)
+	local blip = AddBlipForCoord(Config.JailBlip)
 
--- Create Blips
-Citizen.CreateThread(function()
-	local blip = AddBlipForCoord(Config.JailBlip.x, Config.JailBlip.y, Config.JailBlip.z)
-	SetBlipSprite (blip, 188)
-	SetBlipDisplay(blip, 4)
-	SetBlipScale  (blip, 1.9)
-	SetBlipColour (blip, 4)
+	SetBlipSprite(blip, 188)
+	SetBlipScale (blip, 1.9)
+	SetBlipColour(blip, 6)
 	SetBlipAsShortRange(blip, true)
 
 	BeginTextCommandSetBlipName('STRING')
-	AddTextComponentString(_U('blip_name'))
+	AddTextComponentSubstringPlayerName(_U('blip_name'))
 	EndTextCommandSetBlipName(blip)
 end)
 
-function draw2dText(text, pos)
+function draw2dText(text, x, y)
 	SetTextFont(4)
-	SetTextProportional(1)
 	SetTextScale(0.45, 0.45)
 	SetTextColour(255, 255, 255, 255)
-	SetTextDropShadow(0, 0, 0, 0, 255)
-	SetTextEdge(1, 0, 0, 0, 255)
+	SetTextDropshadow(0, 0, 0, 0, 255)
 	SetTextDropShadow()
 	SetTextOutline()
 
 	BeginTextCommandDisplayText('STRING')
 	AddTextComponentSubstringPlayerName(text)
-	EndTextCommandDisplayText(table.unpack(pos))
+	EndTextCommandDisplayText(x, y)
 end

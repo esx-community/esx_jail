@@ -7,6 +7,7 @@ description 'ESX Jail'
 version '1.1.0'
 
 server_scripts {
+	'@async/async.lua',
 	'@mysql-async/lib/MySQL.lua',
 	'@es_extended/locale.lua',
 	'locales/en.lua',
@@ -25,4 +26,7 @@ client_scripts {
 	'client/main.lua'
 }
 
-dependency 'es_extended'
+dependencies {
+	'es_extended',
+	'async'
+}
