@@ -51,22 +51,23 @@ end, true, {help = 'Unjail a player', validate = true, arguments = {
 RegisterNetEvent('esx_jail:sendToJail')
 AddEventHandler('esx_jail:sendToJail', function(playerId, jailTime, quiet)
 	local xPlayer = ESX.GetPlayerFromId(playerId)
+ 	if xPlayer.job.name == 'police' then
+		if xPlayer then
+			if not playersInJail[playerId] then
+				MySQL.Async.execute('UPDATE users SET jail_time = @jail_time WHERE identifier = @identifier', {
+					['@identifier'] = xPlayer.identifier,
+					['@jail_time'] = jailTime
+				}, function(rowsChanged)
+					xPlayer.triggerEvent('esx_policejob:unrestrain')
+					xPlayer.triggerEvent('esx_jail:jailPlayer', jailTime)
+					playersInJail[playerId] = {timeRemaining = jailTime, identifier = xPlayer.getIdentifier()}
 
-	if xPlayer then
-		if not playersInJail[playerId] then
-			MySQL.Async.execute('UPDATE users SET jail_time = @jail_time WHERE identifier = @identifier', {
-				['@identifier'] = xPlayer.identifier,
-				['@jail_time'] = jailTime
-			}, function(rowsChanged)
-				xPlayer.triggerEvent('esx_policejob:unrestrain')
-				xPlayer.triggerEvent('esx_jail:jailPlayer', jailTime)
-				playersInJail[playerId] = {timeRemaining = jailTime, identifier = xPlayer.getIdentifier()}
+					if not quiet then
+						TriggerClientEvent('chat:addMessage', -1, {args = {_U('judge'), _U('jailed_msg', xPlayer.getName(), ESX.Math.Round(jailTime / 60))}, color = {147, 196, 109}})
+					end
+				end)
 
-				if not quiet then
-					TriggerClientEvent('chat:addMessage', -1, {args = {_U('judge'), _U('jailed_msg', xPlayer.getName(), ESX.Math.Round(jailTime / 60))}, color = {147, 196, 109}})
-				end
-			end)
-
+			end
 		end
 	end
 end)
