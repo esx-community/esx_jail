@@ -1,7 +1,5 @@
-ESX = nil
+ESX = exports["es_extended"]:getSharedObject()
 local playersInJail = {}
-
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 AddEventHandler('esx:playerLoaded', function(playerId, xPlayer)
 	MySQL.Async.fetchAll('SELECT jail_time FROM users WHERE identifier = @identifier', {
